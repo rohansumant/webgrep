@@ -35,4 +35,4 @@ class QNode {
   }
 };
 
-module.exports = Q;
+exports = module.exports = Q;
