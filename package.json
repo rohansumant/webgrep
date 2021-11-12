@@ -1,0 +1,25 @@
+{
+  "name": "webgrep",
+  "version": "1.0.0",
+  "description": "A grepping webcrawler.",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify main.js -o bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohansumant/webgrep.git"
+  },
+  "author": "Rohan Sumant",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rohansumant/webgrep/issues"
+  },
+  "homepage": "https://github.com/rohansumant/webgrep#readme",
+  "dependencies": {
+    "browserify": "^17.0.0",
+    "datastructures-js": "^10.1.1",
+    "jquery": "^3.6.0"
+  }
+}
