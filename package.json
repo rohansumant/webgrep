@@ -4,7 +4,9 @@
   "description": "A grepping webcrawler.",
   "main": "index.js",
   "scripts": {
-    "build": "browserify main.js -o bundle.js",
+    "clean": "rm -rf bundle.js grep.user.js",
+    "build": "browserify main.js --standalone webgrep -o bundle.js",
+    "postbuild": "node buildUserScript.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +20,7 @@
   },
   "homepage": "https://github.com/rohansumant/webgrep#readme",
   "dependencies": {
+    "axios": "^0.24.0",
     "browserify": "^17.0.0",
     "datastructures-js": "^10.1.1",
     "jquery": "^3.6.0"
