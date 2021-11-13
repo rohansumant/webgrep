@@ -6,11 +6,12 @@ var globalStop = false;
 function processPage(link, page,
   queue, visited, pattern) {
   
+  visited.add(link);
   // Print out all matches.
 
-  let el = document.createElement('html');
+  let el = document.createElement('template');
   el.innerHTML = page;
-  let text = el.textContent;
+  let text = el.innerText;
   let matches = [...text.matchAll(new RegExp(pattern,'g'))];
 
   if(matches.length > 0) {
@@ -20,15 +21,15 @@ function processPage(link, page,
 
   // Extract links on the page and add them to the queue
 
-  let linksRE = /href="(https:.*?)"/g;
+  let linksRE = /href="(\/wiki\/.*?)"/g;
   let newLinks = [...page.matchAll(linksRE)];
 
   const currOrigin = window.location.origin;
 
-  for(let nl of newLinks) {
-    if(nl.length > 1 && nl[1].startsWith(currOrigin) && !nl[1].match(/\?/)) {
-      queue.enqueue(nl[1]);
-    }
+  for(let nl of newLinks) if(nl.length > 1) {
+    let newLink = nl[1];
+    console.log(newLink);
+    queue.enqueue(newLink);
   }
 
 }
