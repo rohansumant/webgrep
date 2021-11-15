@@ -3,15 +3,14 @@ const axios = require('axios');
 
 var globalStop = false;
 
-function processPage(link, page,
+function processPage(link, page, searchPrefix,
   queue, visited, pattern) {
   
   visited.add(link);
   // Print out all matches.
 
-  let el = document.createElement('template');
-  el.innerHTML = page;
-  let text = el.innerText;
+  let htmlDoc = new DOMParser().parseFromString(page,'text/html');
+  let text = htmlDoc.body.innerText;
   let matches = [...text.matchAll(new RegExp(pattern,'g'))];
 
   if(matches.length > 0) {
@@ -21,25 +20,28 @@ function processPage(link, page,
 
   // Extract links on the page and add them to the queue
 
-  let linksRE = /href="(\/wiki\/.*?)"/g;
-  let newLinks = [...page.matchAll(linksRE)];
-
-  const currOrigin = window.location.origin;
-
-  for(let nl of newLinks) if(nl.length > 1) {
-    let newLink = nl[1];
-    console.log(newLink);
-    queue.enqueue(newLink);
+  let linksRE = new RegExp('href="(' + searchPrefix + ')"','g');
+  let reIterator = page.matchAll(linksRE);
+  if(reIterator) {
+    let newLinks = [...page.matchAll(linksRE)];
+    for(let nl of newLinks) if(nl.length > 1) {
+      let newLink = nl[1];
+      // console.log(newLink);
+      queue.enqueue(newLink);
+    }
   }
 
 }
 
 
-async function webgrep(pattern) {
+async function webgrep(pattern,searchPrefix) {
+
   globalStop = false;
   window.addEventListener('mousedown',(e) => {
-    console.log('Stopping webgrep!');
-    globalStop = true;
+    if(!globalStop) {
+      console.log('Stopping webgrep!');
+      globalStop = true;
+    }
   });
 
 
@@ -55,7 +57,7 @@ async function webgrep(pattern) {
     let currPage = undefined;
     await axios.get(currLink)
       .then(value => {
-        currPage = value.data;
+        currPage = value.data.slice();
       })
       .catch(err => {
         console.log('Error GETing ', currLink);
@@ -65,7 +67,7 @@ async function webgrep(pattern) {
     // scrape links.
 
     if(currPage) {
-      processPage(currLink, currPage, 
+      processPage(currLink, currPage, searchPrefix,
         urlQueue, visited, pattern);
     }
   }

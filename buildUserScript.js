@@ -20,7 +20,9 @@ const suffix = `(function() {
     // Your code here...
 })();
 `; 
+
 var content = '';
+
 try {
   let data = fs.readFileSync('bundle.js', 'utf8');
   content = prefix + data + suffix;
